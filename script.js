@@ -1,3 +1,8 @@
+function calcularPrecioTotal(bacha, cantidad) {
+  const precioTotal = bacha.precio * cantidad;
+  return precioTotal;
+}
+
 const bachas = [
   { tipo: "simple", precio: 20000 },
   { tipo: "doble", precio: 40000 },
@@ -14,7 +19,7 @@ while (seguirComprando) {
   const bachaElegida = bachas.find(bacha => bacha.tipo === tipoBacha);
 
   if (bachaElegida) {
-    const precioTotal = bachaElegida.precio * cantidadBachas;
+    const precioTotal = calcularPrecioTotal(bachaElegida, cantidadBachas);
     total += precioTotal;
     alert(`Usted ha comprado ${cantidadBachas} bachas ${tipoBacha}, con un precio total de $${precioTotal.toLocaleString('es-AR')}. El total a pagar hasta ahora es de $${total.toLocaleString('es-AR')}.`);
 
