@@ -1,0 +1,22 @@
+[
+  {
+    "tipo": "Simple",
+    "precio": 20000,
+    "imagen": "simple.jpg"
+  },
+  {
+    "tipo": "Doble",
+    "precio": 40000,
+    "imagen": "doble.jpg"
+  },
+  {
+    "tipo": "Cuadrada",
+    "precio": 60000,
+    "imagen": "cuadrada.jpg"
+  },
+  {
+    "tipo": "Circular",
+    "precio": 15000,
+    "imagen": "circular.jpg"
+  }
+]
