@@ -1,30 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Carrito de Compras</title>
+  <title>Marmoleria Sabatino</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="https://kit.fontawesome.com/121b3f397d.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
   <header>
-    <h1>Carrito de Compras</h1>
+    <h1>Marmoleria Sabatino</h1>
   </header>
 
-  <section>
-    <h2>Carrito de Compras</h2>
-    <ul id="carrito-list">
+  <div class="cart-icon">
+    <i class="fas fa-shopping-cart"></i>
+  </div>
 
-    </ul>
-
-    <div id="total-container">
-      <span>Total a pagar:</span>
-      <span id="total-amount">$0</span>
+  <div class="carrito">
+    <button id="btn-carrito">
+      <i class="fas fa-shopping-cart"></i>
+      <span id="carrito-count">0</span>
+    </button>
+    <div id="carrito-items">
+      <ul id="carrito-list"></ul>
+      <div id="total-container">
+        <span>Total a pagar:</span>
+        <span id="total-amount"></span>
+      </div>
+      <button id="finalizar-compra">Finalizar compra</button>
     </div>
-  </section>
-
-  <div id="bachas-container"></div>
-  <button id="btn-ver-carrito">Ver carrito</button>
+  </div>
 
   
+  
+  <section>
+    <h2>Carrito de Compras</h2>
+    <div id="bachas-container"></div>
+  </section>
+
   <script src="script.js"></script>
 </body>
 </html>

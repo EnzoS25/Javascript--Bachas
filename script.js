@@ -1,56 +1,60 @@
-function cargarDatosDesdeLocalStorage() {
-  const datosGuardados = localStorage.getItem('carritoItems');
-  if (datosGuardados) {
-    carritoItems = JSON.parse(datosGuardados);
-    cargarCarrito();
-  }
-}
-
-function cargarCarrito() {
-
-  localStorage.setItem('carritoItems', JSON.stringify(carritoItems));
-}
-
-
-
 document.addEventListener('DOMContentLoaded', function() {
-  const bachasList = document.getElementById('bachas-list');
-  const agregarBtns = document.getElementsByClassName('agregar-btn');
+  Swal.fire('¡Hola!', '¡Bienvenido a Marmoleria Sabatino!');
+
   const carritoList = document.getElementById('carrito-list');
   const totalAmount = document.getElementById('total-amount');
+  const cartIcon = document.querySelector('.cart-icon');
+  const carrito = document.querySelector('.carrito');
+  const countProductos = document.getElementById('carrito-count');
+  const finalizarCompraBtn = document.getElementById('finalizar-compra');
   let total = 0;
+  let carritoItems = [];
 
+  function cargarDatosDesdeLocalStorage() {
+    const datosGuardados = localStorage.getItem('carritoItems');
+    if (datosGuardados) {
+      carritoItems = JSON.parse(datosGuardados);
+      cargarCarrito();
+    }
+  }
+
+  function cargarCarrito() {
+    carritoList.innerHTML = '';
+    total = 0;
+
+    carritoItems.forEach(function(bachaItem) {
+      const bachaElement = document.createElement('li');
+      bachaElement.textContent = `Bacha ${bachaItem.tipo} x${bachaItem.cantidad}`;
+      carritoList.appendChild(bachaElement);
+
+      total += bachaItem.precio * bachaItem.cantidad;
+    });
+
+    totalAmount.textContent = `$${total.toLocaleString('es-AR')}`;
+    countProductos.textContent = obtenerTotalProductos();
+  }
+
+  function obtenerTotalProductos() {
+    let totalProductos = 0;
+
+    carritoItems.forEach(function(bachaItem) {
+      totalProductos += bachaItem.cantidad;
+    });
+
+    return totalProductos;
+  }
+
+  cartIcon.addEventListener('click', function() {
+    carrito.classList.toggle('show');
+  });
+
+  const bachasContainer = document.getElementById('bachas-container');
 
   fetch('bachas.json')
     .then(response => response.json())
     .then(data => {
       const bachas = data;
 
-
-      for (let i = 0; i < agregarBtns.length; i++) {
-        agregarBtns[i].addEventListener('click', function() {
-          const bachaTipo = this.parentNode.querySelector('.bacha-tipo').textContent;
-          const bachaPrecio = parseInt(this.parentNode.querySelector('.bacha-precio').textContent.replace('$', '').replace(',', ''));
-          const cantidadBachas = 1;
-
-          const precioTotal = calcularPrecioTotal(bachaPrecio, cantidadBachas);
-          total += precioTotal;
-
-
-          const bachaItem = document.createElement('li');
-          bachaItem.textContent = `${cantidadBachas} bachas ${bachaTipo}`;
-          carritoList.appendChild(bachaItem);
-
-
-          totalAmount.textContent = `$${total.toLocaleString('es-AR')}`;
-        });
-      }
-
-      const bachasContainer = document.getElementById('bachas-container');
-      const carrito = document.getElementById('carrito');
-      let carritoItems = [];
-
-  
       bachas.forEach(function(bacha) {
         const card = document.createElement('div');
         card.classList.add('card');
@@ -62,51 +66,47 @@ document.addEventListener('DOMContentLoaded', function() {
         tipo.textContent = bacha.tipo;
 
         const precio = document.createElement('p');
+        precio.classList.add('precio');
         precio.textContent = `Precio: $${bacha.precio.toLocaleString('es-AR')}`;
+
+        const agregarBtn = document.createElement('button');
+        agregarBtn.textContent = 'Agregar';
+        agregarBtn.classList.add('agregar-btn');
 
         card.appendChild(image);
         card.appendChild(tipo);
         card.appendChild(precio);
-        card.addEventListener("click", () => {
+        card.appendChild(agregarBtn);
 
-          // Agregar bacha al carrito
-          const item = document.createElement("p");
-          item.textContent = `Bacha ${bacha.tipo}`;
-          const carritoList = document.getElementById("carrito-list");
-          carritoList.appendChild(item);
-          carritoItems.push(bacha);
+        agregarBtn.addEventListener('click', function() {
+          const bachaTipo = tipo.textContent;
+          const bachaPrecio = parseInt(precio.textContent.replace('Precio: $', '').replace(',', ''));
+
+          const bachaItem = carritoItems.find(item => item.tipo === bachaTipo);
+          if (bachaItem) {
+            bachaItem.cantidad++;
+          } else {
+            carritoItems.push({ tipo: bachaTipo, precio: bachaPrecio, cantidad: 1 });
+          }
+
           cargarCarrito();
+          guardarDatosEnLocalStorage();
         });
 
         bachasContainer.appendChild(card);
       });
 
-      function cargarCarrito() {
-        carritoList.innerHTML = '';
-        let total = 0;
-
-        carritoItems.forEach(function(bachaItem) {
-          const bachaElement = document.createElement('li');
-          bachaElement.textContent = `Bacha ${bachaItem.tipo}`;
-          carritoList.appendChild(bachaElement);
-
-          total += bachaItem.precio;
-        });
-
-        totalAmount.textContent = `$${total.toLocaleString('es-AR')}`;
-      }
-
-      const btnVerCarrito = document.getElementById('btn-ver-carrito');
-      btnVerCarrito.addEventListener('click', function() {
-        carrito.classList.toggle('show');
-      });
+      cargarDatosDesdeLocalStorage();
     });
 
-  function calcularPrecioTotal(precio, cantidad) {
-    return precio * cantidad;
+  finalizarCompraBtn.addEventListener('click', function() {
+    Swal.fire('¡Gracias por tu compra!', '', 'success');
+    carritoItems = [];
+    cargarCarrito();
+    guardarDatosEnLocalStorage();
+  });
+
+  function guardarDatosEnLocalStorage() {
+    localStorage.setItem('carritoItems', JSON.stringify(carritoItems));
   }
-
-
-  cargarDatosDesdeLocalStorage();
-
 });
